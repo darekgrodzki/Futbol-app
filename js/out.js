@@ -11121,10 +11121,13 @@ var Leagues = exports.Leagues = function (_React$Component) {
             }
             var listOfLeagues = this.state.leagues.map(function (item) {
                 return _react2.default.createElement(
-                    _reactRouterDom.Link,
+                    _reactRouterDom.NavLink,
                     { to: '/teams/' + item.id, key: item.id, style: {
                             color: 'black',
                             textDecoration: 'none'
+                        },
+                        activeStyle: {
+                            color: 'blue'
                         } },
                     _react2.default.createElement(
                         'li',
@@ -11412,10 +11415,13 @@ var Teams = exports.Teams = function (_React$Component) {
             var listOfTeams = this.state.teams.map(function (item, index) {
 
                 return _react2.default.createElement(
-                    _reactRouterDom.Link,
+                    _reactRouterDom.NavLink,
                     { to: '/teams/' + _this4.state.id + '/players/' + index, key: index, style: {
                             color: 'black',
                             textDecoration: 'none'
+                        },
+                        activeStyle: {
+                            color: 'blue'
                         } },
                     _react2.default.createElement(
                         'li',

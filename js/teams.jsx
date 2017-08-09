@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter, Route, Link} from 'react-router-dom';
+import {BrowserRouter, Route, NavLink} from 'react-router-dom';
 import cacheProxy from './cacheProxy';
 
 export class Teams extends React.Component {
@@ -46,15 +46,18 @@ export class Teams extends React.Component {
 
         const listOfTeams = this.state.teams.map((item, index) => {
 
-            return <Link to={`/teams/${this.state.id}/players/${index}`} key={index} style={{
+            return <NavLink to={`/teams/${this.state.id}/players/${index}`} key={index} style={{
                 color: 'black',
                 textDecoration: 'none'
+            }}
+            activeStyle={{
+              color: 'blue'
             }}>
                 <li style={{
                     listStyleType: 'none',
                     paddingLeft: '25px'
                 }}>{item.name}</li>
-            </Link>;
+            </NavLink>;
         });
 
         return <div style={{
