@@ -3664,30 +3664,30 @@ var createPath = exports.createPath = function createPath(location) {
 /***/ (function(module, exports) {
 
 class CacheProxy {
-    _fetchData( url ){
-      return fetch(url,{
-        headers:{
-          'X-Auth-Token' : '765f919bb0b24db286cec8a8f9d1c0d0'
-        }
-      }).then(r => r.json());
+    _fetchData(url) {
+        return fetch(url, {
+            headers: {
+                'X-Auth-Token': '765f919bb0b24db286cec8a8f9d1c0d0'
+            }
+        }).then(r => r.json());
     }
 
 
 
-    constructor(){
+    constructor() {
         this.cache = {}
 
         this.get = url => {
             if (url in this.cache)
                 return Promise.resolve(this.cache[url]);
             else
-                return this._fetchData( url ).then( data => {
+                return this._fetchData(url).then(data => {
                     this.cache[url] = data;
                     return data;
-                } );
+                });
         }
     }
-    
+
 }
 
 module.exports = new CacheProxy();
@@ -10572,7 +10572,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                 display: 'flex'
                             } },
                         _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _leagues.Leagues }),
-                        _react2.default.createElement(_reactRouterDom.Route, { path: '/teams/:id', component: _teams.Teams })
+                        _react2.default.createElement(_reactRouterDom.Route, { path: '/teams/:id', component: _teams.Teams }),
+                        _react2.default.createElement(_reactRouterDom.Route, { path: '/teams/:id/players/:name', component: _teamplayers.Players })
                     )
                 );
             }
@@ -11109,7 +11110,6 @@ var Leagues = exports.Leagues = function (_React$Component) {
 
             _cacheProxy2.default.get('http://api.football-data.org/v1/competitions').then(function (dataObj) {
                 _this2.setState({ leagues: dataObj, loading: false });
-                console.log(_this2.state.leagues);
             });
         }
     }, {
@@ -11122,10 +11122,16 @@ var Leagues = exports.Leagues = function (_React$Component) {
             var listOfLeagues = this.state.leagues.map(function (item) {
                 return _react2.default.createElement(
                     _reactRouterDom.Link,
-                    { to: '/players/' + item.id, key: item.id },
+                    { to: '/teams/' + item.id, key: item.id, style: {
+                            color: 'black',
+                            textDecoration: 'none'
+                        } },
                     _react2.default.createElement(
                         'li',
-                        null,
+                        { style: {
+                                listStyleType: 'none',
+                                paddingLeft: '25px'
+                            } },
                         item.caption
                     )
                 );
@@ -11136,11 +11142,13 @@ var Leagues = exports.Leagues = function (_React$Component) {
                 { style: {
                         width: '33%',
                         height: '100vh',
-                        border: '1px solid red'
+                        backgroundColor: 'red'
                     } },
                 _react2.default.createElement(
-                    'h1',
-                    null,
+                    'h3',
+                    { style: {
+                            textAlign: 'center'
+                        } },
                     'Wybierz lig\u0119:'
                 ),
                 _react2.default.createElement(
@@ -11200,26 +11208,51 @@ var Players = exports.Players = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (Players.__proto__ || Object.getPrototypeOf(Players)).call(this, props));
 
         _this.state = {
-            leagues: [],
+            id: "",
             loading: true,
-            team: ""
+            team: "",
+            href: "",
+            players: []
         };
         return _this;
     }
 
     _createClass(Players, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
             var _this2 = this;
 
             this.setState({
-                teams: nextProps.teams
+                id: this.props.match.params.id,
+                team: this.props.match.params.name,
+                loading: true
             }, function () {
-                _cacheProxy2.default.get('http://api.football-data.org/v1/competitions/' + ('' + _this2.props.match.params.id) + '/teams').then(function (Obj) {
-                    console.log('Obj', Obj);
+                _cacheProxy2.default.get('http://api.football-data.org/v1/competitions/' + ('' + _this2.state.id) + '/teams').then(function (Obj) {
                     _this2.setState({
-                        team: Obj,
-                        loading: false
+                        href: Obj.teams[_this2.state.team]._links.players.href
+                    });
+                    _cacheProxy2.default.get('' + _this2.state.href).then(function (Object) {
+                        _this2.setState({ players: Object.players, loading: false });
+                    });
+                });
+            });
+        }
+    }, {
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            var _this3 = this;
+
+            this.setState({
+                id: nextProps.match.params.id,
+                team: nextProps.match.params.name,
+                loading: true
+            }, function () {
+                _cacheProxy2.default.get('http://api.football-data.org/v1/competitions/' + ('' + _this3.state.id) + '/teams').then(function (Obj) {
+                    _this3.setState({
+                        href: Obj.teams[_this3.state.team]._links.players.href
+                    });
+                    _cacheProxy2.default.get('' + _this3.state.href).then(function (Object) {
+                        _this3.setState({ players: Object.players, loading: false });
                     });
                 });
             });
@@ -11228,26 +11261,56 @@ var Players = exports.Players = function (_React$Component) {
         key: 'render',
         value: function render() {
 
-            // if(this.state.loading){
-            //     return null;
-            // }
-            //
-            // const listOfPlayers = this.state.player.players.map((item,index) => {
-            //     return <li key={index} >{item.name}</li>;
-            // });
+            if (this.state.loading) {
+                return null;
+            }
+            if (this.state.players.length === 0) {
+                return _react2.default.createElement(
+                    'div',
+                    { style: {
+                            width: '33%',
+                            height: '100vh',
+                            backgroundColor: 'green'
+                        } },
+                    _react2.default.createElement(
+                        'h3',
+                        { style: {
+                                textAlign: 'center'
+                            } },
+                        'Niestety, nie mamy listy zawodnik\xF3w'
+                    )
+                );
+            }
+
+            var listOfPlayers = this.state.players.map(function (item, index) {
+                return _react2.default.createElement(
+                    'li',
+                    { key: index, style: {
+                            listStyleType: 'none',
+                            paddingLeft: '25px'
+                        } },
+                    item.name
+                );
+            });
 
             return _react2.default.createElement(
                 'div',
-                { style: { width: '300px', height: '100vh', border: '1px solid green' } },
+                { style: {
+                        width: '33%',
+                        height: '100vh',
+                        backgroundColor: 'green'
+                    } },
+                _react2.default.createElement(
+                    'h3',
+                    { style: {
+                            textAlign: 'center'
+                        } },
+                    'Lista zawodnik\xF3w'
+                ),
                 _react2.default.createElement(
                     'p',
                     null,
-                    this.props.match.params.id
-                ),
-                _react2.default.createElement(
-                    _reactRouterDom.Link,
-                    { to: '/players/' + this.props.match.params.id + '/teamplayers/4' },
-                    'frtgrg'
+                    listOfPlayers
                 )
             );
         }
@@ -11304,7 +11367,6 @@ var Teams = exports.Teams = function (_React$Component) {
 
             teams: [],
             loading: true,
-            players: [],
             id: ""
         };
 
@@ -11320,12 +11382,7 @@ var Teams = exports.Teams = function (_React$Component) {
                 id: this.props.match.params.id
             }, function () {
                 _cacheProxy2.default.get('http://api.football-data.org/v1/competitions/' + ('' + _this2.state.id) + '/teams').then(function (Obj) {
-                    console.log('Obj', Obj);
-                    console.log(_this2.state.id);
-                    _this2.setState({
-                        teams: Obj.teams,
-                        loading: false
-                    });
+                    _this2.setState({ teams: Obj.teams, loading: false });
                 });
             });
         }
@@ -11335,39 +11392,61 @@ var Teams = exports.Teams = function (_React$Component) {
             var _this3 = this;
 
             this.setState({
-                id: nextProps.match.params.id
+                id: nextProps.match.params.id,
+                loading: true
             }, function () {
                 _cacheProxy2.default.get('http://api.football-data.org/v1/competitions/' + ('' + _this3.state.id) + '/teams').then(function (Obj) {
-                    console.log('Obj', Obj);
-                    console.log(_this3.state.id);
-                    _this3.setState({
-                        teams: Obj.teams,
-                        loading: false
-                    });
+                    _this3.setState({ teams: Obj.teams, loading: false });
                 });
             });
         }
     }, {
         key: 'render',
         value: function render() {
+            var _this4 = this;
 
             if (this.state.loading) {
                 return null;
             }
 
-            var listOfTeams = this.state.teams.map(function (item) {
+            var listOfTeams = this.state.teams.map(function (item, index) {
+
                 return _react2.default.createElement(
-                    'li',
-                    null,
-                    item.name
+                    _reactRouterDom.Link,
+                    { to: '/teams/' + _this4.state.id + '/players/' + index, key: index, style: {
+                            color: 'black',
+                            textDecoration: 'none'
+                        } },
+                    _react2.default.createElement(
+                        'li',
+                        { style: {
+                                listStyleType: 'none',
+                                paddingLeft: '25px'
+                            } },
+                        item.name
+                    )
                 );
             });
 
             return _react2.default.createElement(
                 'div',
-                { style: { width: '33%', height: '100vh', border: '1px solid green' } },
-                'anything',
-                listOfTeams
+                { style: {
+                        width: '33%',
+                        height: '100vh',
+                        backgroundColor: 'white'
+                    } },
+                _react2.default.createElement(
+                    'h3',
+                    { style: {
+                            textAlign: 'center'
+                        } },
+                    'Wybierz dru\u017Cyn\u0119:'
+                ),
+                _react2.default.createElement(
+                    'p',
+                    null,
+                    listOfTeams
+                )
             );
         }
     }]);
