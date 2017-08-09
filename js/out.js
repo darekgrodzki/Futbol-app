@@ -11125,8 +11125,7 @@ var Leagues = exports.Leagues = function (_React$Component) {
                     { to: '/teams/' + item.id, key: item.id, style: {
                             color: 'black',
                             textDecoration: 'none'
-                        },
-                        activeStyle: {
+                        }, activeStyle: {
                             color: 'blue'
                         } },
                     _react2.default.createElement(
@@ -11419,8 +11418,7 @@ var Teams = exports.Teams = function (_React$Component) {
                     { to: '/teams/' + _this4.state.id + '/players/' + index, key: index, style: {
                             color: 'black',
                             textDecoration: 'none'
-                        },
-                        activeStyle: {
+                        }, activeStyle: {
                             color: 'blue'
                         } },
                     _react2.default.createElement(

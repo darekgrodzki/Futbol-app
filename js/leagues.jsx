@@ -28,9 +28,8 @@ export class Leagues extends React.Component {
             return <NavLink to={`/teams/${item.id}`} key={item.id} style={{
                 color: 'black',
                 textDecoration: 'none'
-            }}
-            activeStyle={{
-              color: 'blue'
+            }} activeStyle={{
+                color: 'blue'
             }}>
                 <li style={{
                     listStyleType: 'none',

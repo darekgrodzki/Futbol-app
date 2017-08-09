@@ -49,9 +49,8 @@ export class Teams extends React.Component {
             return <NavLink to={`/teams/${this.state.id}/players/${index}`} key={index} style={{
                 color: 'black',
                 textDecoration: 'none'
-            }}
-            activeStyle={{
-              color: 'blue'
+            }} activeStyle={{
+                color: 'blue'
             }}>
                 <li style={{
                     listStyleType: 'none',
