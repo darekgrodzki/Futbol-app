@@ -21,7 +21,9 @@ export class Teams extends React.Component {
             id: this.props.match.params.id
         }, () => {
             cacheProxy.get('https://api.football-data.org/v1/competitions/' + `${this.state.id}` + '/teams').then(Obj => {
+                console.log(Obj);
                 this.setState({teams: Obj.teams, loading: false});
+
             });
         })
     }
