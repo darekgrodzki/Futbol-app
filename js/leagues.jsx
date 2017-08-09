@@ -15,7 +15,7 @@ export class Leagues extends React.Component {
 
     componentDidMount() {
 
-        cacheProxy.get('http://api.football-data.org/v1/competitions').then(dataObj => {
+        cacheProxy.get('https://api.football-data.org/v1/competitions').then(dataObj => {
             this.setState({leagues: dataObj, loading: false});
         });
     }

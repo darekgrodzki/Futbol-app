@@ -20,7 +20,7 @@ export class Teams extends React.Component {
         this.setState({
             id: this.props.match.params.id
         }, () => {
-            cacheProxy.get('http://api.football-data.org/v1/competitions/' + `${this.state.id}` + '/teams').then(Obj => {
+            cacheProxy.get('https://api.football-data.org/v1/competitions/' + `${this.state.id}` + '/teams').then(Obj => {
                 this.setState({teams: Obj.teams, loading: false});
             });
         })
@@ -32,7 +32,7 @@ export class Teams extends React.Component {
             id: nextProps.match.params.id,
             loading: true
         }, () => {
-            cacheProxy.get('http://api.football-data.org/v1/competitions/' + `${this.state.id}` + '/teams').then(Obj => {
+            cacheProxy.get('https://api.football-data.org/v1/competitions/' + `${this.state.id}` + '/teams').then(Obj => {
                 this.setState({teams: Obj.teams, loading: false});
             });
         })

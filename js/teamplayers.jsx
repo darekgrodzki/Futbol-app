@@ -23,7 +23,7 @@ export class Players extends React.Component {
             team: this.props.match.params.name,
             loading: true
         }, () => {
-            cacheProxy.get('http://api.football-data.org/v1/competitions/' + `${this.state.id}` + '/teams').then(Obj => {
+            cacheProxy.get('https://api.football-data.org/v1/competitions/' + `${this.state.id}` + '/teams').then(Obj => {
                 this.setState({
                     href: Obj.teams[this.state.team]._links.players.href
                 });
@@ -41,7 +41,7 @@ export class Players extends React.Component {
             team: nextProps.match.params.name,
             loading: true
         }, () => {
-            cacheProxy.get('http://api.football-data.org/v1/competitions/' + `${this.state.id}` + '/teams').then(Obj => {
+            cacheProxy.get('https://api.football-data.org/v1/competitions/' + `${this.state.id}` + '/teams').then(Obj => {
                 this.setState({
                     href: Obj.teams[this.state.team]._links.players.href
                 });
