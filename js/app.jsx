@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     class App extends React.Component {
 
-        render() {
+        render() { 
 
             return (
                 <BrowserRouter>
